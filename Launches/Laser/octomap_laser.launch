@@ -1,0 +1,46 @@
+<launch>
+	<!-- start nodelet manager and driver nodelets -->
+	<include file="$(find velodyne_driver)/launch/nodelet_manager.launch" />
+
+	<!-- start cloud nodelet -->
+	<include file="$(find velodyne_pointcloud)/launch/cloud_nodelet.launch">
+	<arg name="calibration"
+	 value="$(find velodyne_pointcloud)/params/64e_utexas.yaml"/>
+	<arg name="min_range"
+	 value="0.001"/>
+	</include>
+
+
+	<!--LASER-->
+
+	<node pkg="tf" type="static_transform_publisher" name="simple_tf_laser_broadcaster_node" args="0 0 0 0 0 0 velodyne map 100" />
+	
+	
+	<node pkg="velodyne_driver" type="velodyne_node" name="velodyne_node" />
+	<node pkg="velodyne_pointcloud" type="cloud_node" name="cloud_node" >
+		<param name="calibration" type="string" value="$(find velodyne_pointcloud)/params/64e_utexas.yaml" />
+		<param name="min_range" type="double" value="0.01" />
+	</node>
+	
+	<node pkg="velodyne_pointcloud" type="transform_node" name="transform_node">
+		<param name="frame_id" type="string" value="/laser" />
+	</node>
+
+
+
+	<!--OCTOMAP SERVER-->
+
+
+	<node pkg="octomap_server" type="octomap_server_node" name="octomap_server_node" output='screen'>
+		<param name="frame_id" type="string" value="/map" />
+		<param name="resolution" value="0.025" />
+		<param name="height_map" type="bool" value="true" />
+		<param name="sensor_model/max_range" value="-1" />
+		<param name="latch" type="bool"  value="false" />
+		<param name="sensor_model/max_range" value="100.0" />
+
+		<remap from="cloud_in" to="/velodyne_points" />
+	</node>
+
+
+</launch>

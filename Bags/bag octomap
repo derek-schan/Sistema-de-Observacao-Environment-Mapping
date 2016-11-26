@@ -1,0 +1,1 @@
+rosbag record --duration=1m /cloud_nodelet/parameter_descriptions /cloud_nodelet/parameter_updates /diagnostics /free_cells_vis_array /occupied_cells_vis_array /octomap_binary /octomap_full /octomap_point_cloud_centers /octomap_server_node/parameter_descriptions /octomap_server_node/parameter_updates /projected_map /rosout /rosout_agg /tf /tf_static
